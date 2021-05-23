@@ -29,12 +29,13 @@ public class WordNetImpl implements WordNet {
         digraph = new Digraph(nouns.length);
         // adjMat = new Bag[nouns.length];
 
-        Path k = Paths.get("C:\\Users\\HP\\Desktop\\Spring projects\\JDBC projects\\AlgorithmsProject\\src\\main\\resources\\hypernyms.txt");
+        Path k = Paths.get("C:\\Users\\HP\\Desktop\\Spring projects\\JDBC " +
+                "projects\\AlgorithmsProject\\src\\main\\resources\\hypernyms.txt");
         Files.lines(k).
                 map(x -> x.split(","))
                 .forEach(x -> {
                     for (int i = 1; i < x.length; i++) {
-                        digraph.addEdge(0, Integer.parseInt(x[i]));
+                        digraph.addEdge(Integer.parseInt(x[0]), Integer.parseInt(x[i]));
                     }
                 });
 
