@@ -1,6 +1,7 @@
 package org.beri;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 public class Bag<T> {
 
@@ -53,7 +54,9 @@ public class Bag<T> {
         }
     }
 
-     class Node<T> {
+
+
+    class Node<T> {
 
         T data;
         Node<T> next;
