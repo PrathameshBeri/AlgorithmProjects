@@ -14,7 +14,8 @@ public class SAPImpl implements SAP {
     int commonAncestor = -1;
     int length;
     List<Integer> path;
-    boolean ancestorFound;
+    boolean ancestorFound = false;
+    boolean firstRound = false;
 
 
     public SAPImpl(Digraph d) {
@@ -38,6 +39,7 @@ public class SAPImpl implements SAP {
     public Iterable<Integer> path(int v, int w) {
         clearResults();
         modifiedDFS(v);
+        firstRound = true;
         modifiedDFS(w);
         List<Integer> path2 = findPath(commonAncestor);
         Collections.reverse(path);
@@ -98,22 +100,23 @@ public class SAPImpl implements SAP {
     }
 
     public void modifiedDFS(int e) {
-        if (!ancestorFound) {
-            visited[e] = true;
-            for (Iterator<Integer> it = graph.getIterable(e); it.hasNext(); ) {
-                int m = it.next();
-                if (!visited[m]) {
-                    modifiedDFS(m);
-                    edgeTo[m] = e;
-                } else {
-                    commonAncestor = m;
-                    ancestorFound = true;
-                    path = findPath(m);
-                    edgeTo[m] = e;
-                    return;
-                }
+        visited[e] = true;
+        for (Iterator<Integer> it = graph.getIterable(e); it.hasNext(); ) {
+            int m = it.next();
+            if (!visited[m]) {
+                modifiedDFS(m);
+                edgeTo[m] = e;
+            } else if (visited[m] && firstRound && !ancestorFound) {
+                commonAncestor = m;
+                ancestorFound = !ancestorFound; //change this pretty dumb
+                path = findPath(m);
+                edgeTo[m] = e;
+                return;
+            } else {
+                return;
             }
         }
+
     }
 
     public void clearResults() {
