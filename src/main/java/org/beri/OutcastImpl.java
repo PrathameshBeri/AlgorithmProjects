@@ -10,7 +10,7 @@ public class OutcastImpl implements Outcast{
     }
 
     @Override
-    public String outcast(String[] nouns) {
+    public String outcast(String[] nouns) throws Exception {
         int max_dist = Integer.MIN_VALUE;
         String outcast = null;
 

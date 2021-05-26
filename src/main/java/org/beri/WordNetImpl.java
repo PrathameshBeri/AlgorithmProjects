@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WordNetImpl implements WordNet {
@@ -49,15 +52,33 @@ public class WordNetImpl implements WordNet {
 
     @Override
     public boolean isNoun(String word) {
-        return Arrays.binarySearch(nouns, word, String::compareToIgnoreCase) > 0;
+        return findNoun(word) > 0;
     }
 
     @Override
-    public int distance(String A, String B) {
+    public int distance(String A, String B) throws Exception {
 
-        int a = Arrays.binarySearch(nouns, A, String::compareToIgnoreCase);
-        int b = Arrays.binarySearch(nouns, B, String::compareToIgnoreCase);
-        return helper.length(a, b);
+       // int a = Arrays.binarySearch(nouns, A, String::compareToIgnoreCase);
+      //  int b = Arrays.binarySearch(nouns, B, String::compareToIgnoreCase);
+        int a = findNoun(A);
+        int b = findNoun(B);
+        if(a >= 0 && b >= 0 ) {
+            return helper.length(a, b);
+        }
+        else throw new Exception("Word not present");
+    }
+
+    public int findNoun(String noun){
+
+        int m = Arrays.binarySearch(nouns, noun, String::compareTo);
+        if(m > 0){
+            return m;
+        }else{
+            String n = nouns[Math.abs(m) - 1];
+            if(n.contains(noun)){
+                return Math.abs(m) - 1;
+            }else return -1;
+        }
     }
 
     @Override
