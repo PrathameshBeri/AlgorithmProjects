@@ -66,7 +66,7 @@ public class WordNetImpl implements WordNet {
 
     @Override
     public boolean isNoun(String word) {
-        return findNoun(word) > 0;
+        return nounz.containsKey(word);
     }
 
     @Override
@@ -74,31 +74,28 @@ public class WordNetImpl implements WordNet {
 
        // int a = Arrays.binarySearch(nouns, A, String::compareToIgnoreCase);
       //  int b = Arrays.binarySearch(nouns, B, String::compareToIgnoreCase);
-        int a = findNoun(A);
-        int b = findNoun(B);
-        if(a >= 0 && b >= 0 ) {
+        Iterable<Integer> a = findNoun(A);
+        Iterable<Integer> b = findNoun(B);
+
             return helper.length(a, b);
-        }
-        else throw new Exception("Word not present");
+
     }
 
-    public int findNoun(String noun){
+    public Iterable<Integer> findNoun(String noun){
 
-        int m = Arrays.binarySearch(nouns, noun, String::compareTo);
-        if(m > 0){
-            return m;
-        }else{
-            String n = nouns[Math.abs(m) - 1];
-            if(n.contains(noun)){
-                return Math.abs(m) - 1;
-            }else return -1;
-        }
+       // int m = Arrays.binarySearch(nouns, noun, String::compareTo);
+
+        return nounz.get(noun);
+
     }
 
     @Override
     public String sap(String A, String B) {
-        int a = Arrays.binarySearch(nouns, A, String::compareToIgnoreCase);
-        int b = Arrays.binarySearch(nouns, B, String::compareToIgnoreCase);
+      //  int a = Arrays.binarySearch(nouns, A, String::compareToIgnoreCase);
+        //int b = Arrays.binarySearch(nouns, B, String::compareToIgnoreCase);
+
+        List<Integer> a = nounz.get(A);
+        List<Integer> b = nounz.get(B);
         int sca = helper.ancestor(a,b);
         return nouns[sca];
     }
