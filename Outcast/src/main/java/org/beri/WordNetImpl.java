@@ -4,16 +4,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.List;
 
 public class WordNetImpl implements WordNet {
 
     String[] nouns;
+
+
+    HashMap<String, List<Integer>> nounz;
 
     //Bag<Integer>[] adjMat;
 
@@ -23,12 +24,25 @@ public class WordNetImpl implements WordNet {
 
     WordNetImpl() throws IOException {
         Path p = Paths.get("C:\\Users\\HP\\Desktop\\Spring projects\\JDBC projects\\AlgorithmsProject\\src\\main\\resources\\synsets.txt");
+        nounz = new HashMap<String, List<Integer>>();
         nouns = Files.lines(p).
                 map(x -> x.split(",")).
                 map(x -> {
                     return x[1];
                 }).
                 toArray(String[]::new);
+
+        Files.lines(p).forEach(x ->{
+            String[] s = x.split(",");
+            String[] individual = s[1].split(" ");
+            for(String i : individual){
+                List<Integer> wordNos = nounz.getOrDefault(i, new ArrayList<>());
+                wordNos.add(Integer.parseInt(s[0]));
+                nounz.put(i, wordNos);
+            }
+        });
+
+
         digraph = new Digraph(nouns.length);
         // adjMat = new Bag[nouns.length];
 
