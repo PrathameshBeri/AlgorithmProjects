@@ -61,7 +61,7 @@ public class SAPImpl implements SAP {
 
     @Override
     public int length(Iterable<Integer> v, Iterable<Integer> w) {
-        return sap("length", v, w);
+        return sap("length", v, w).get(0);
     }
 
     @Override
@@ -71,15 +71,20 @@ public class SAPImpl implements SAP {
         //return whichever is asked
 
 
-        return sap("ancestor", v, w);
+        return sap("ancestor", v, w).get(0);
     }
 
 
-    public int sap(String s, Iterable<Integer> v, Iterable<Integer> w) {
+    public List<Integer> shortestPaths(Iterable<Integer> v, Iterable<Integer> w){
+        return sap("path",v,w);
+    }
+
+
+    public List<Integer> sap(String s, Iterable<Integer> v, Iterable<Integer> w) {
 
         int shortPath = Integer.MAX_VALUE;
         int localCommonAncestor = -1;
-
+        List<Integer> lpath = null ;
         for (int e : v) {
 
             for (int f : w) {
@@ -88,6 +93,7 @@ public class SAPImpl implements SAP {
                 if (l.size() < shortPath) {
                     shortPath = l.size();
                     localCommonAncestor = commonAncestor;
+                    lpath = l;
                 }
 
             }
@@ -95,8 +101,11 @@ public class SAPImpl implements SAP {
         }
 
         if (s.equals("length"))
-            return shortPath - 1;
-        else return localCommonAncestor;
+            return Collections.singletonList(shortPath - 1);
+        else if(s.equals("path")){
+            return lpath;
+        }
+        else return Collections.singletonList(localCommonAncestor);
     }
 
     public void modifiedDFS(int e) {
@@ -121,6 +130,7 @@ public class SAPImpl implements SAP {
 
     public void clearResults() {
         ancestorFound = false;
+        path = new ArrayList<>();
         for (int i = 0; i < vertices; i++) {
             edgeTo[i] = -1;
             visited[i] = false;
